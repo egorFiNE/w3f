@@ -1,8 +1,8 @@
 package main
 
 import (
-    "strings"
-    "strconv"
+	"strings"
+	"strconv"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -29,11 +29,13 @@ func main() {
 		os.Exit(1)
 	}
 
-    blockNumberString := strings.Replace(response.Result, "0x", "", -1)
-    blockNumber, err := strconv.ParseUint(blockNumberString, 16, 32)
-    if err != nil {
-        panic(err)
-    }
+	blockNumberString := strings.Replace(response.Result, "0x", "", -1)
+
+	blockNumber, err := strconv.ParseUint(blockNumberString, 16, 32)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Printf("%d\n", blockNumber);
 }
 
@@ -41,23 +43,25 @@ func fetchJson(url string) (*ethBlockResponse, string) {
 	body := []byte(`{
 		"method": "eth_blockNumber",
 		"id": 1,
-        "jsonrpc": "2.0",
+		"jsonrpc": "2.0",
 		"params": []
 	}`)
 
-    r, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	r, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+
 	if err != nil {
 		return nil, "failed to make POST request"
 	}
-    r.Header.Add("Content-Type", "application/json")
 
-    client := &http.Client{}
-    resp, err := client.Do(r)
-    if err != nil {
-        panic(err)
-    }
+	r.Header.Add("Content-Type", "application/json")
 
-    defer resp.Body.Close()
+	client := &http.Client{}
+	resp, err := client.Do(r)
+	if err != nil {
+		panic(err)
+	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Sprintf("unexpected status code: %d", resp.StatusCode)
